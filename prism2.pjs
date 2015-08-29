@@ -1,0 +1,92 @@
+var flash = false;
+var size = 900
+var variance = 10;
+var center = project.view.bounds.center
+var path,path2;
+var proPath,fill1,fill2;
+var corner;
+var numChoice = 7;
+var _ = require('underscore');
+
+function baseShape(point){
+ 	path = new Path(center);
+ 	path2 = new Path()
+	//path2 = real path
+	path.add(center)
+	path.add(center+[200,0])
+	for(var i=0;i<numChoice;i++){
+		num = Math.random()*90
+		path.rotate(num)
+		path2.add(path.segments[1])
+		path.rotate(90-num)
+	}
+	//path2.fillColor = prettyRaCo();
+	path2.position = point;
+	return path2;
+}
+
+function offShoot(path){
+	corner = base.segments[Math.floor(Math.random()*numChoice)]
+	offshoot = new Path(corner)
+	offshoot.add(path.bounds.center)
+	offshoot.rotate(180,corner.point)
+	return offshoot;
+
+}
+function draw(){
+	project.activeLayer.clear()
+	group = new Group()
+	//createShape([event.offsetX,event.offsetY])
+	base = baseShape(new Point(center))//[event.offsetX,event.offsetY]))
+	offshoot = offShoot(base)
+	vector = offshoot.segments[1].point-offshoot.segments[0].point
+
+	_.each(base.segments,function(corner,i){
+		addon = new Point(corner.point+vector)
+		//if(!base.hitTest(addon))
+		//	{
+				p = new Path(corner.point)
+				p.add(addon)
+				//whatever the next point is..
+				otherpt = base.segments[Math.abs((i-1)%base.segments.length)].point
+				p.add(otherpt+vector)
+				p.add(otherpt)
+				p.fillColor = prettyRaCo()
+				group.children.push(p)
+		//	}
+		if(flash)
+		group.children.push(base)
+		else
+		group.children.push(base.clone())
+
+	})
+		group.scale(2.4)
+    group.bounds.center = view.bounds.center
+}
+
+function prettyRaCo()
+        {
+            var colorWheel =  Math.floor(Math.random()*6);
+
+            var color = "rgb(";
+            var randomNumber =  Math.floor(Math.random()*256);
+            if(colorWheel ==0)
+            color= color+ "0,255,"+randomNumber+")";
+             if(colorWheel ==1)
+            color= color+ "0,"+randomNumber+",255)";
+             if(colorWheel ==2)
+            color= color+ "255, 0,"+randomNumber+")";
+             if(colorWheel ==3)
+            color= color+ "255,"+randomNumber+",0)";
+             if(colorWheel ==4)
+            color= color+ randomNumber+",255,0)";
+             if(colorWheel ==5)
+            color= color+ randomNumber+",0,255)";
+            return color;
+        }
+
+draw();
+
+exports = function(){
+  return project.exportSVG({asString: true})
+}

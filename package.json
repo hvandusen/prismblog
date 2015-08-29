@@ -1,0 +1,25 @@
+{
+  "name": "prismblog",
+  "version": "1.0.0",
+  "description": "a daily blog of my prisms",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hvandusen/prismblog.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hvandusen/prismblog/issues"
+  },
+  "homepage": "https://github.com/hvandusen/prismblog#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "node-schedule": "^0.2.9",
+    "paper": "^0.9.24",
+    "underscore": "^1.8.3"
+  }
+}

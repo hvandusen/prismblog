@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title> prism blog </title>
+<script src='jquery-2.0.0.min.js' type='text/javascript'></script>
+<script src='secondary.js' type='text/javascript'></script>
+<link rel="stylesheet" href="style.css">
+</head>
+  <body>
+   <a id='title' style='background-color:white'> a daily shape blog </a>
+   <br>
+   <br>
+   <br>
+<div id='container' style='text-align:center'>
+<% for(var i=posts.length-1; i>-1; i--) {%>
+    <a class='date'> <%= posts[i].date %></a><br>
+    <%- posts[i].svg %>
+    <br>
+<% } %>
+</div>
+
+    <br>
+<script>
+$('#title').css('color',prettyRaCo())
+$('body').mousemove(function(){
+$('#title').css('color',prettyRaCo())
+})
+
+</script>
+</body>
+</html>

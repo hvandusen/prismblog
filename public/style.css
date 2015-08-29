@@ -1,0 +1,11 @@
+.date {
+  font-size:2em;
+  position:absolute;
+  left: 10px;
+  border-bottom: solid black 1px;
+}
+
+#title{
+  font-size: 3em;
+  position:fixed
+}
