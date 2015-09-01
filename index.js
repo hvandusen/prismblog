@@ -1,6 +1,12 @@
 var fs = require('fs');
 var _ = require('underscore');
+var mongoose = require('mongoose');
+//mongoose.connect('mongodb://henry:henryvd1@ds059702.mongolab.com:59702/candusenhub');
+mongoose.connect('mongodb://localhost/candusenhub');
+var db = mongoose.connection;
+var Blogshape = require('./models/blogshape');
 var paper = require('paper');
+var ejs = require('ejs');
 var express = require('express')
 var app = express();
 app.use(express.static(__dirname + '/public'));
@@ -9,35 +15,31 @@ var schedule = require('node-schedule');
 app.set('view engine','ejs')
 var posts = [];
 app.get('/', function (request, response) {
-    response.render('index',{posts: posts});
+    response.render('index',{posts: svgs});
 });
-
-//add initial
-var scope = require('./prism2.pjs')(new paper.Size(800, 700));
-posts.push({
-  svg: scope.project.exportSVG({'asString':true}),
-  date: Date().split(' ').splice(0,4).join(' ')
+var svgs;
+var scope;
+Blogshape.find(function(err,docs){
+  console.dir(docs.length)
+  svgs = docs;
 });
+db.on('error', console.error.bind(console, 'connection error:'));
+//
+everyDay();
 
 var j = schedule.scheduleJob('* * * * *', function(){
     everyDay()
-    console.log('added shape. posts is '+posts.length+' long now');
-
 });
 
 function everyDay(){
   scope = require('./prism2.pjs')(new paper.Size(800, 700));
-  posts.push({
+  pic = new Blogshape({
     svg: scope.project.exportSVG({'asString':true}),
     date: Date().split(' ').splice(0,4).join(' ')
   });
+  pic.save(function(err,docs){
+    Blogshape.find(function(err,docs){
+      svgs = docs;
+    });
+  });
 }
-
-
-
-fs.writeFile("circle.svg", '<svg>'+scope.project.exportSVG({'asString':true})+'</svg>', function(err) {
-    if(err) {
-        return console.log(err);
-    }
-    console.log("The file was saved!");
-});
