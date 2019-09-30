@@ -6,7 +6,6 @@ var path,path2;
 var proPath,fill1,fill2;
 var corner;
 var numChoice = 7;
-var _ = require('underscore');
 
 function baseShape(point){
  	path = new Path(center);
@@ -41,7 +40,7 @@ function draw(){
 	offshoot = offShoot(base)
 	vector = offshoot.segments[1].point-offshoot.segments[0].point
 
-	_.each(base.segments,function(corner,i){
+	base.segments.map(function(corner,i){
 		addon = new Point(corner.point+vector)
 		//if(!base.hitTest(addon))
 		//	{
@@ -60,30 +59,20 @@ function draw(){
 		group.children.push(base.clone())
 
 	})
-		group.scale(2.4)
+		group.scale(3)
     group.bounds.center = view.bounds.center
 }
 
-function prettyRaCo()
-        {
-            var colorWheel =  Math.floor(Math.random()*6);
+function prettyRaCo(){
+  var nums = [0,255,Math.floor(Math.random()*256)];
+  var out = [];
+  for (var i = 0; i < 3; i++) {
+    var which = Math.floor(Math.random()*nums.length)
+    out = out.concat(nums.splice(which,which+1))
+  }
+  return "rgb(" + out.join(",") + ")"
+}
 
-            var color = "rgb(";
-            var randomNumber =  Math.floor(Math.random()*256);
-            if(colorWheel ==0)
-            color= color+ "0,255,"+randomNumber+")";
-             if(colorWheel ==1)
-            color= color+ "0,"+randomNumber+",255)";
-             if(colorWheel ==2)
-            color= color+ "255, 0,"+randomNumber+")";
-             if(colorWheel ==3)
-            color= color+ "255,"+randomNumber+",0)";
-             if(colorWheel ==4)
-            color= color+ randomNumber+",255,0)";
-             if(colorWheel ==5)
-            color= color+ randomNumber+",0,255)";
-            return color;
-        }
 
 draw();
 
