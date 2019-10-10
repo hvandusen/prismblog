@@ -1,4 +1,3 @@
-var flash = false;
 var size = 900
 var variance = 10;
 var center = project.view.bounds.center
@@ -10,16 +9,15 @@ var numChoice = 7;
 function baseShape(point){
  	path = new Path(center);
  	path2 = new Path()
+  path2.strokeColor = "red"
 	//path2 = real path
 	path.add(center)
 	path.add(center+[200,0])
 	for(var i=0;i<numChoice;i++){
-		num = Math.random()*90
-		path.rotate(num)
+		path.rotate(Math.random()*90)
 		path2.add(path.segments[1])
-		path.rotate(90-num)
+		path.rotate(90-Math.random()*90)
 	}
-	//path2.fillColor = prettyRaCo();
 	path2.position = point;
 	return path2;
 }
@@ -35,32 +33,28 @@ function offShoot(path){
 function draw(){
 	project.activeLayer.clear()
 	group = new Group()
-	//createShape([event.offsetX,event.offsetY])
 	base = baseShape(new Point(center))//[event.offsetX,event.offsetY]))
 	offshoot = offShoot(base)
 	vector = offshoot.segments[1].point-offshoot.segments[0].point
-
+  offshoot.remove()
 	base.segments.map(function(corner,i){
 		addon = new Point(corner.point+vector)
-		//if(!base.hitTest(addon))
-		//	{
-				p = new Path(corner.point)
-				p.add(addon)
-				//whatever the next point is..
-				otherpt = base.segments[Math.abs((i-1)%base.segments.length)].point
-				p.add(otherpt+vector)
-				p.add(otherpt)
-				p.fillColor = prettyRaCo()
-				group.children.push(p)
-		//	}
-		if(flash)
-		group.children.push(base)
-		else
-		group.children.push(base.clone())
-
+		p = new Path(corner.point)
+    p.fillColor = 'black'
+		p.add(addon)
+		//whatever the next point is..
+		otherpt = base.segments[Math.abs((i-1)%base.segments.length)].point
+		p.add(otherpt+vector)
+		p.add(otherpt)
+		p.fillColor = prettyRaCo()
+		group.children.push(p)
+    p.remove()
 	})
 		group.scale(3)
     group.bounds.center = view.bounds.center
+    base.remove()
+    path.remove();
+    path2.remove();
 }
 
 function prettyRaCo(){

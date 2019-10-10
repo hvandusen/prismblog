@@ -9,11 +9,6 @@ const express = require('express');
 const nunjucks = require('nunjucks');
 let svgs = []
 
-var addDateToItem = function (item) {
-  console.log("id: ", item._id.id.toString())
-	return { ...item, date: new Date(parseInt(item._id.id.substring(0, 8), 16) * 1000)};
-};
-
 updateSvgs();
 
 var app = express();
@@ -53,9 +48,15 @@ function updateSvgs(){
       console.log(err)
     }
     const collection = client.db("prism-blog").collection("shapes")
-    collection.find().toArray().
-    then( data => {
-      svgs = data.map(addDateToItem)
+    // fs.writeFile("texst.svg",getNewShape());
+      collection.insert({
+        svg: getNewShape(),
+        date: new Date()
+      })
+    collection.find().sort({date: -1}).toArray().
+    map(svg => {...svg, date: svg.date.})
+    .then( data => {
+      svgs = [ ...data ];
       console.log("there are this many shapes :) ",svgs.length)
       client.close()
     })
