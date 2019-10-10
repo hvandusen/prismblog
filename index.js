@@ -8,6 +8,8 @@ const client = new MongoClient(uri, { useNewUrlParser: true })
 const express = require('express');
 const nunjucks = require('nunjucks');
 let svgs = []
+var mostRecentPost = new Date(0);
+var ONE_DAY = 60 * 60 * 1000*24;
 
 updateSvgs();
 
@@ -19,6 +21,11 @@ nunjucks.configure('views', {
 });
 
 app.get('/', function(req, res) {
+  if(new Date() - ONE_DAY > mostRecentPost)
+    updateSvgs();
+  else {
+    console.log("fetched recently enough")
+  }
     res.render('index.html',{data: svgs});
 });
 
@@ -40,7 +47,11 @@ function getNewShape(){
   })
 }
 
-
+function sameDay(d1, d2) {
+  return d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate();
+}
 
 function updateSvgs(){
   client.connect(err => {
@@ -48,13 +59,10 @@ function updateSvgs(){
       console.log(err)
     }
     const collection = client.db("prism-blog").collection("shapes")
-    // fs.writeFile("texst.svg",getNewShape());
-      collection.insert({
-        svg: getNewShape(),
-        date: new Date()
-      })
     collection.find().sort({date: -1}).toArray()
     .then( data => {
+        mostRecentPost = new Date(data[0].date)
+      console.log('most recent: ',mostRecentPost)
       svgs = [ ...data ];
       console.log("there are this many shapes :) ",svgs.length)
       client.close()

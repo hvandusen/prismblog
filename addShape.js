@@ -5,24 +5,9 @@ var paper = require("paper")
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://hvandusen:"+process.env.MONGO_PW+"@hankscluster-dtp7l.mongodb.net/test?retryWrites=true&w=majority"
 const client = new MongoClient(uri, { useNewUrlParser: true })
-const express = require('express');
-const nunjucks = require('nunjucks');
 let svgs = []
 
-updateSvgs();
-
-var app = express();
-
-nunjucks.configure('views', {
-    autoescape: true,
-    express: app
-});
-
-app.get('/', function(req, res) {
-    res.render('index.html',{data: svgs});
-});
-
-app.listen(3332);
+addSvg();
 
 function getNewShape(){
   const dom = new JSDOM('<!DOCTYPE html><html lang="en" dir="ltr"><head><meta charset="utf-8"><title></title></head><body></body></html>')
@@ -40,9 +25,7 @@ function getNewShape(){
   })
 }
 
-
-
-function updateSvgs(){
+function addSvg(){
   client.connect(err => {
     if(err){
       console.log(err)
@@ -52,15 +35,8 @@ function updateSvgs(){
       collection.insert({
         svg: getNewShape(),
         date: new Date()
+      }).then( () => {
+        client.close()
       })
-    collection.find().sort({date: -1}).toArray().
-    map(svg => {...svg, date: svg.date.})
-    .then( data => {
-      svgs = [ ...data ];
-      console.log("there are this many shapes :) ",svgs.length)
-      client.close()
-    })
-
-
   });
 }
