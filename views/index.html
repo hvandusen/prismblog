@@ -4,12 +4,17 @@
     <meta charset="utf-8">
     <title>"One shape a day"</title>
     <style media="screen">
+    .nav {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+    }
     .shape {
       text-align: center;
     }
       .shape svg {
-        max-width: 100vw;
-        max-height: 100vw;
+        max-width: 100%;
+        max-height: calc(100vh - 100px);
       }
       h1 {
         font-weight: normal;
@@ -24,6 +29,9 @@
         font-size: 10vw;
         /* letter-spacing: 1.4vw; */
         text-align: center;
+      }
+      .title a {
+        color: black;
       }
       .post {
         position: relative;
@@ -49,7 +57,20 @@
     </style>
   </head>
   <body>
-    <h1 class="title">Daily Shape Blog</h1>
+    <h1 class="title"><a href="/">Daily Shape Blog</a></h1>
+    <div class="nav">
+      <div class="pagenumber">Page {{ page }} / {{pages}}</div>
+        {% if page > 1 %}
+          {% if page == 2 %}
+            <a href="/">prev</a>
+          {% else %}
+            <a href="/page/{{ page -1 }}">prev</a>
+          {% endif %}
+        {% endif %}
+        {% if page < pages %}
+          <a href="/page/{{ page + 1}}">next</a>
+        {% endif %}
+    </div>
     <div class="posts">
     {% for item in data %}
       <div class="post">

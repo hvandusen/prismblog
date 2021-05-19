@@ -10,6 +10,7 @@ const nunjucks = require('nunjucks');
 let svgs = []
 var mostRecentPost = new Date(0);
 var ONE_DAY = 60 * 60 * 1000*24;
+var paginate = 20;
 
 updateSvgs();
 
@@ -21,12 +22,21 @@ nunjucks.configure('views', {
 });
 
 app.get('/', function(req, res) {
+  let pages = Math.floor(svgs.length/paginate);
   if(new Date() - ONE_DAY > mostRecentPost)
     updateSvgs();
   else {
     console.log("fetched recently enough")
   }
-    res.render('index.html',{data: svgs});
+    res.render('index.html',{pages: pages,page:1,data: svgs.slice(0,paginate)});
+});
+
+app.get('/page/:page', function(req, res) {
+  let thePage = parseInt(req.params.page);
+  let pages = Math.floor(svgs.length/paginate);
+  if(thePage>pages)
+    thePage = 1
+    res.render('index.html',{pages:Math.floor(svgs.length/paginate),page:thePage,data: svgs.slice((thePage-1)*paginate,(thePage*paginate)%svgs.length)});
 });
 
 app.listen(process.env.PORT ? process.env.PORT : 3332);
