@@ -21,7 +21,7 @@
     "datauri": "^0.7.1",
     "express": "^4.17.1",
     "jade": "*",
-    "jsdom": "^15.1.1",
+    "jsdom": "^16.5.0",
     "mongodb": "^3.3.2",
     "mongoose": "^4.1.4",
     "node-schedule": "^0.2.9",
